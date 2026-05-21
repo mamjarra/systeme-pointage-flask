@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Comptage en Direct</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:white;min-height:100vh}
+        header{background:linear-gradient(135deg,#14532d,#16a34a);padding:18px 30px;display:flex;align-items:center;gap:14px}
+        header h1{font-size:1.4rem}
+        nav{background:#1e293b;padding:10px 30px;display:flex;gap:10px}
+        nav a{color:#94a3b8;text-decoration:none;padding:7px 18px;border-radius:7px;font-size:.9rem;transition:.2s}
+        nav a:hover,nav a.active{background:#16a34a;color:white}
+        .page{max-width:860px;margin:28px auto;padding:0 22px}
+        .video-card{background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #334155;margin-bottom:22px}
+        .video-card img{width:100%;display:block}
+        .counter{background:#1e293b;border-radius:14px;padding:44px 20px;text-align:center;border:1px solid #334155}
+        .counter .big{font-size:8rem;font-weight:900;color:#4ade80;line-height:1;transition:all .3s}
+        .counter .lbl{font-size:1.2rem;color:#94a3b8;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+        .dot{width:10px;height:10px;border-radius:50%;background:#4ade80;animation:pulse 1.2s infinite}
+        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
+    </style>
+</head>
+<body>
+<header>
+    <span style="font-size:1.8rem">👥</span>
+    <h1>Comptage en Direct</h1>
+</header>
+<nav>
+    <a href="/">🏠 Pointage</a>
+    <a href="/comptage" class="active">👥 Comptage</a>
+    <a href="/stats">📈 Statistiques</a>
+</nav>
+<div class="page">
+    <div class="video-card">
+        <img src="/video_comptage" alt="Flux comptage">
+    </div>
+    <div class="counter">
+        <div class="big" id="nb">0</div>
+        <div class="lbl"><span class="dot"></span>personne(s) dans la salle en ce moment</div>
+    </div>
+</div>
+<script>
+setInterval(async()=>{
+    try{
+        const d = await (await fetch('/api/count')).json();
+        document.getElementById('nb').textContent = d.count;
+    }catch(e){}
+}, 800);
+</script>
+</body>
+</html>

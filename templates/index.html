@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Système de Pointage</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:white;min-height:100vh}
+        header{background:linear-gradient(135deg,#1e40af,#1d4ed8);padding:18px 30px;display:flex;align-items:center;gap:14px}
+        header h1{font-size:1.4rem}
+        .dot{width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 1.5s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+        nav{background:#1e293b;padding:10px 30px;display:flex;gap:10px}
+        nav a{color:#94a3b8;text-decoration:none;padding:7px 18px;border-radius:7px;font-size:0.9rem;transition:.2s}
+        nav a:hover,nav a.active{background:#3b82f6;color:white}
+        .main{display:flex;gap:22px;padding:28px;max-width:1200px;margin:0 auto}
+        .video-wrap{flex:1;background:#1e293b;border-radius:14px;overflow:hidden;border:1px solid #334155}
+        .video-wrap img{width:100%;display:block}
+        .side{width:290px;display:flex;flex-direction:column;gap:16px}
+        .card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155}
+        .card h3{color:#60a5fa;font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+        #msgBox{font-size:1rem;color:#4ade80;min-height:26px;font-weight:600;text-align:center;transition:color .3s}
+        .step{display:flex;align-items:center;gap:10px;background:#0f172a;border-radius:8px;padding:10px;margin-bottom:8px;font-size:.87rem}
+        .num{width:26px;height:26px;border-radius:50%;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.8rem}
+        .num.ok{background:#16a34a}
+        .btn{display:block;text-align:center;padding:11px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px;transition:.2s;font-size:.9rem}
+        .btn-blue{background:#3b82f6;color:white}.btn-blue:hover{background:#2563eb}
+        .btn-green{background:#16a34a;color:white}.btn-green:hover{background:#15803d}
+    </style>
+</head>
+<body>
+<header>
+    <span style="font-size:1.8rem">📊</span>
+    <h1>Système de Pointage Intelligent</h1>
+    <span style="margin-left:auto;font-size:.85rem"><span class="dot"></span>Caméra active</span>
+</header>
+<nav>
+    <a href="/" class="active">🏠 Pointage</a>
+    <a href="/comptage">👥 Comptage</a>
+    <a href="/stats">📈 Statistiques</a>
+</nav>
+<div class="main">
+    <div class="video-wrap">
+        <img src="/video_pointage" alt="Flux pointage">
+    </div>
+    <div class="side">
+        <div class="card">
+            <h3>⚡ Statut</h3>
+            <div id="msgBox">⏳ En attente...</div>
+        </div>
+        <div class="card">
+            <h3>📋 Comment se pointer</h3>
+            <div class="step"><div class="num">1</div><span>Placez-vous face à la caméra</span></div>
+            <div class="step"><div class="num">2</div><span>Attendez la détection du visage <span style="color:#4ade80">(cadre vert)</span></span></div>
+            <div class="step"><div class="num">3</div><span>Levez la main bien visible en haut</span></div>
+            <div class="step"><div class="num ok">✓</div><span>Présence enregistrée automatiquement !</span></div>
+        </div>
+        <div class="card">
+            <h3>🔗 Navigation</h3>
+            <a href="/stats"    class="btn btn-blue">📈 Voir les présences</a>
+            <a href="/comptage" class="btn btn-green">👥 Comptage en direct</a>
+        </div>
+    </div>
+</div>
+<script>
+let prev = "";
+setInterval(async()=>{
+    try{
+        const d = await (await fetch('/api/message')).json();
+        if(d.message && d.message !== prev){
+            const el = document.getElementById('msgBox');
+            el.textContent = d.message;
+            el.style.color = d.message.includes('PRÉSENT') ? '#4ade80' : '#fbbf24';
+            prev = d.message;
+        }
+    }catch(e){}
+}, 800);
+</script>
+</body>
+</html>
